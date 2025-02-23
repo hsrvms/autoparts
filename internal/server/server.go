@@ -3,6 +3,8 @@ package server
 import (
 	"context"
 	"fmt"
+	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -15,6 +17,15 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+// Template renderer
+type TemplateRenderer struct {
+	templates *template.Template
+}
+
+func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return t.templates.ExecuteTemplate(w, name, data)
+}
+
 // Server represents our HTTP server
 type Server struct {
 	Echo   *echo.Echo
@@ -25,6 +36,28 @@ type Server struct {
 // New creates a new server instance
 func New(cfg *config.Config, database *db.Database) *Server {
 	e := echo.New()
+
+	// Debug: Print template loading
+	log.Println("Loading templates...")
+
+	// Create a new template with a specific pattern
+	tmpl := template.New("")
+
+	// Add template functions if needed
+	tmpl.Funcs(template.FuncMap{
+		// Add any custom functions here
+	})
+
+	// Parse all templates
+	tmpl = template.Must(tmpl.ParseGlob("web/templates/layout/*.html"))
+	tmpl = template.Must(tmpl.ParseGlob("web/templates/partials/*.html"))
+	tmpl = template.Must(tmpl.ParseGlob("web/templates/dashboard/*.html"))
+	tmpl = template.Must(tmpl.ParseGlob("web/templates/dashboard/partials/*.html"))
+	// Initialize template renderer
+	renderer := &TemplateRenderer{
+		templates: template.Must(template.ParseGlob("web/templates/**/*.html")),
+	}
+	e.Renderer = renderer
 
 	// Enable middleware
 	e.Use(middleware.Logger())

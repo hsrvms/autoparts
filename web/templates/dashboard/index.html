@@ -1,0 +1,285 @@
+{{ define "content" }}
+<div class="space-y-6">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Low Stock Items -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-red-100">
+                    <svg
+                        class="w-6 h-6 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-gray-600 text-sm font-medium">
+                        Low Stock Items
+                    </h2>
+                    <p
+                        class="text-2xl font-semibold text-gray-900"
+                        hx-get="/api/stats?stat=low-stock-count"
+                        hx-trigger="load"
+                    >
+                        ...
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Sales Today -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100">
+                    <svg
+                        class="w-6 h-6 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-gray-600 text-sm font-medium">
+                        Today's Sales
+                    </h2>
+                    <p
+                        class="text-2xl font-semibold text-gray-900"
+                        hx-get="/api/stats?stat=today-sales"
+                        hx-trigger="load"
+                    >
+                        ...
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Items -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100">
+                    <svg
+                        class="w-6 h-6 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                        />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-gray-600 text-sm font-medium">
+                        Active Items
+                    </h2>
+                    <p
+                        class="text-2xl font-semibold text-gray-900"
+                        hx-get="/api/stats?stat=active-items"
+                        hx-trigger="load"
+                    >
+                        ...
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Suppliers -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-purple-100">
+                    <svg
+                        class="w-6 h-6 text-purple-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                        />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-gray-600 text-sm font-medium">
+                        Active Suppliers
+                    </h2>
+                    <p
+                        class="text-2xl font-semibold text-gray-900"
+                        hx-get="/api/stats?stat=supplier-count"
+                        hx-trigger="load"
+                    >
+                        ...
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities and Low Stock Items -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Activities -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">
+                    Recent Activities
+                </h3>
+            </div>
+            <div class="p-6">
+                <div class="flow-root">
+                    <ul
+                        class="-mb-8"
+                        hx-get="/api/activities/recent"
+                        hx-trigger="load"
+                    >
+                        <li class="animate-pulse">
+                            <div class="relative pb-8">
+                                <div class="relative flex space-x-3">
+                                    <div
+                                        class="h-6 w-6 bg-gray-200 rounded-full"
+                                    ></div>
+                                    <div class="flex-1">
+                                        <div
+                                            class="h-4 bg-gray-200 rounded w-3/4"
+                                        ></div>
+                                        <div
+                                            class="mt-2 h-3 bg-gray-200 rounded w-1/2"
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Items -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">
+                    Low Stock Items
+                </h3>
+            </div>
+            <div class="p-6">
+                <div class="flow-root">
+                    <ul
+                        class="divide-y divide-gray-200"
+                        hx-get="/api/inventory/low-stock"
+                        hx-trigger="load"
+                    >
+                        <li class="animate-pulse py-4">
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="h-12 w-12 bg-gray-200 rounded-lg"
+                                ></div>
+                                <div class="flex-1">
+                                    <div
+                                        class="h-4 bg-gray-200 rounded w-3/4"
+                                    ></div>
+                                    <div
+                                        class="mt-2 h-3 bg-gray-200 rounded w-1/2"
+                                    ></div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Quick Actions</h3>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a
+                    href="/inventory/new"
+                    class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100"
+                >
+                    <svg
+                        class="w-6 h-6 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
+                    </svg>
+                    <span class="ml-3 font-medium text-gray-900"
+                        >Add New Item</span
+                    >
+                </a>
+
+                <a
+                    href="/sales/new"
+                    class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100"
+                >
+                    <svg
+                        class="w-6 h-6 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                        />
+                    </svg>
+                    <span class="ml-3 font-medium text-gray-900">New Sale</span>
+                </a>
+
+                <a
+                    href="/purchases/new"
+                    class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100"
+                >
+                    <svg
+                        class="w-6 h-6 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                        />
+                    </svg>
+                    <span class="ml-3 font-medium text-gray-900"
+                        >New Purchase</span
+                    >
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
