@@ -40,12 +40,14 @@ type InventoryService interface {
 }
 
 type inventoryService struct {
-	repo repositories.InventoryRepository
+	repo           repositories.InventoryRepository
+	barcodeService BarcodeService
 }
 
 func NewInventoryService(repo repositories.InventoryRepository) InventoryService {
 	return &inventoryService{
-		repo: repo,
+		repo:           repo,
+		barcodeService: NewBarcodeService(),
 	}
 }
 
@@ -104,7 +106,7 @@ func (s *inventoryService) CreateItem(ctx context.Context, item *inventorymodels
 			supplierID = *item.SupplierID
 		}
 
-		barcode, err := generateBarcode(categoryID, supplierID)
+		barcode, err := s.barcodeService.GenerateBarcode(categoryID, supplierID)
 		if err != nil {
 			return 0, fmt.Errorf("failed to generate barcode: %w", err)
 		}
