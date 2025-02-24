@@ -10,12 +10,14 @@ import (
 )
 
 type InventoryHandler struct {
-	service services.InventoryService
+	service        services.InventoryService
+	barcodeService services.BarcodeService
 }
 
 func NewInventoryHandler(service services.InventoryService) *InventoryHandler {
 	return &InventoryHandler{
-		service: service,
+		service:        service,
+		barcodeService: services.NewBarcodeService(),
 	}
 }
 
@@ -264,4 +266,18 @@ func (h *InventoryHandler) GetCompatibleItems(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, items)
+}
+
+func (h *InventoryHandler) GetBarcodeImage(c echo.Context) error {
+	barcode := c.Param("barcode")
+	if barcode == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "barcode is required")
+	}
+
+	imgBytes, err := h.barcodeService.GenerateBarcodeImage(barcode)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.Blob(http.StatusOK, "image/png", imgBytes)
 }
