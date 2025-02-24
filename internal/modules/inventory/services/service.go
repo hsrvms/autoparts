@@ -4,6 +4,7 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	inventorymodels "github.com/hsrvms/autoparts/internal/modules/inventory/models"
 	"github.com/hsrvms/autoparts/internal/modules/inventory/repositories"
@@ -86,9 +87,28 @@ func (s *inventoryService) GetItemByBarcode(ctx context.Context, barcode string)
 }
 
 func (s *inventoryService) CreateItem(ctx context.Context, item *inventorymodels.Item) (int, error) {
-	// Validate required fields
+	// Validate basic item fields
 	if err := s.validateItem(item); err != nil {
 		return 0, err
+	}
+
+	// Generate barcode if not provided
+	if item.Barcode == nil || *item.Barcode == "" {
+		// Default to 0 if IDs are nil
+		categoryID := 0
+		if item.CategoryID != nil {
+			categoryID = *item.CategoryID
+		}
+		supplierID := 0
+		if item.SupplierID != nil {
+			supplierID = *item.SupplierID
+		}
+
+		barcode, err := generateBarcode(categoryID, supplierID)
+		if err != nil {
+			return 0, fmt.Errorf("failed to generate barcode: %w", err)
+		}
+		item.Barcode = &barcode
 	}
 
 	// Check for duplicate part number
@@ -100,8 +120,8 @@ func (s *inventoryService) CreateItem(ctx context.Context, item *inventorymodels
 		return 0, ErrDuplicatePartNumber
 	}
 
-	// Check for duplicate barcode if provided
-	if item.Barcode != nil && *item.Barcode != "" {
+	// Check for duplicate barcode
+	if item.Barcode != nil {
 		existing, err = s.repo.GetItemByBarcode(ctx, *item.Barcode)
 		if err != nil {
 			return 0, err

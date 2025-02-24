@@ -640,3 +640,68 @@ BEGIN
         c.category_name, i.part_number;
 END;
 $ LANGUAGE plpgsql;
+
+-- Function to get category prefix
+CREATE OR REPLACE FUNCTION get_category_prefix(category_id INTEGER)
+RETURNS TEXT AS $$
+DECLARE
+    category_name TEXT;
+BEGIN
+    SELECT UPPER(LEFT(category_name, 2))
+    INTO category_name
+    FROM categories
+    WHERE category_id = $1;
+    RETURN category_name;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to generate barcode
+CREATE OR REPLACE FUNCTION generate_barcode(category_id INTEGER, item_id INTEGER)
+RETURNS TEXT AS $$
+DECLARE
+    category_prefix TEXT;
+    item_number TEXT;
+    year_suffix TEXT;
+    base_code TEXT;
+    check_digit INTEGER;
+BEGIN
+    -- Get category prefix
+    category_prefix := get_category_prefix(category_id);
+
+    -- Format item_id to 6 digits
+    item_number := LPAD(item_id::TEXT, 6, '0');
+
+    -- Get last 2 digits of current year
+    year_suffix := RIGHT(EXTRACT(YEAR FROM CURRENT_DATE)::TEXT, 2);
+
+    -- Create base code
+    base_code := category_prefix || '-' || item_number || '-' || year_suffix;
+
+    -- Calculate check digit (sum of ASCII values mod 10)
+    SELECT SUM(ASCII(c)) % 10
+    INTO check_digit
+    FROM regexp_split_to_table(base_code, '') c;
+
+    -- Return complete barcode
+    RETURN base_code || '-' || check_digit;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger to generate barcode before insert
+CREATE OR REPLACE FUNCTION generate_barcode_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Only generate barcode if one isn't provided
+    IF NEW.barcode IS NULL THEN
+        NEW.barcode := generate_barcode(NEW.category_id, NEW.item_id);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create the trigger
+DROP TRIGGER IF EXISTS trg_generate_barcode ON items;
+CREATE TRIGGER trg_generate_barcode
+    BEFORE INSERT ON items
+    FOR EACH ROW
+    EXECUTE FUNCTION generate_barcode_trigger();
